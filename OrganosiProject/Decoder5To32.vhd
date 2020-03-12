@@ -71,6 +71,8 @@ begin
 			counter<= "00000";
 		else
 			counter <= counter + 1;
+		end if;
+	end if;
 			
 			
 end clock_process;
