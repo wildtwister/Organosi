@@ -36,15 +36,43 @@ end Decoder5To32;
 
 architecture Behavioral of Decoder5To32 is
 signal counter: STD_LOGIC_VECTOR (4 downto 0);
-begin
+signal myControl: STD_LOGIC_VECTOR (1 downto 0) := "00";
+signal myOutput : STD_LOGIC_VECTOR(31 downto 0);
+signal leftInput: STD_LOGIC;
+signal 
+
 
 component ShiftRegister is
-	port();
+	Port ( SR : in  STD_LOGIC;
+           SL : in  STD_LOGIC;
+           DataIn : in  STD_LOGIC_VECTOR (31 downto 0);
+           CLK : in  STD_LOGIC;
+           RST : in  STD_LOGIC;
+           Control : in  STD_LOGIC_VECTOR (1 downto 0);
+           DataOut : out  STD_LOGIC_VECTOR (31 downto 0));
 end component;
 
+begin
 
+mySRegister : ShiftRegister port map (
+	SR=> '0',
+	SL=> leftinput,
+	DataIn => "00000000000000000000000000000000",
+	CLK => CLK,
+	RST => RST,
+	Control => myControl,
+	DataOut => myOutput
+);
 
-
-
+clock_process: process (RST, CLK)
+begin
+	if rising_edge(CLK) then
+		if RST='1' then
+			counter<= "00000";
+		else
+			counter <= counter + 1;
+			
+			
+end clock_process;
 end Behavioral;
 
