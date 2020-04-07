@@ -19,10 +19,11 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
@@ -40,30 +41,42 @@ entity ALU is
 end ALU;
 
 architecture Behavioral of ALU is
+signal result_32: STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
+signal result_33: STD_LOGIC_VECTOR(32 downto 0) := (others => '0');
 begin
 
-	op_choice: process(Op)
+	op_choice: process(A,B,Op)
 	begin
 		case Op is
 			when "0000" => 
-				Output <= A + B;
+				result_32<= A + B after 10 ns;
 			when "0001" => 
-				Output <= A - B;
+				result_32<= A - B;
 			when "0010" => 
-				Output <= A AND B;
+				result_32 <= A AND B;
 			when "0011" => 
-				Output < A OR B;
+				result_32 <= A OR B;
 			when "0100" => 
-				Output <= NOT A;
+				result_32  <= NOT A;
 			when "0110" => 
-				Output <= A NAND B;
+				result_32 <= A NAND B;
 			when "1000" => 
 			when "1001" => 
 			when "1010" => 
 			when "1100" => 
 			when "1101" => 
+			when others =>
 		end case;
-	end op_choice;
-
+		
+		if (result_32 = x"00") then
+			Zero <= '1';
+		else
+			Zero <= '0';
+		end if;
+	end process;
+	Output <= result_32;
+	result_33 <= ('0' & A) + ('0' & B);
+	Cout <= result_33(32);
+	
 end Behavioral;
 
