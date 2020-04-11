@@ -42,14 +42,16 @@ end ALU;
 
 architecture Behavioral of ALU is
 signal result_32: STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
-signal result_33: STD_LOGIC_VECTOR(32 downto 0) := (others => '0');
+signal result_34: STD_LOGIC_VECTOR(33 downto 0) := (others => '0');
 begin
 
 	op_choice: process(A,B,Op)
 	begin
+		
 		case Op is
 			when "0000" => 
-				result_32<= A + B after 10 ns;
+				result_32<= A + B;
+				result_34 <= ("00" & A) + ("00" & B);
 			when "0001" => 
 				result_32<= A - B;
 			when "0010" => 
@@ -58,25 +60,29 @@ begin
 				result_32 <= A OR B;
 			when "0100" => 
 				result_32  <= NOT A;
-			when "0110" => 
+			when "0101" => 
 				result_32 <= A NAND B;
+			when "0110" => 
+				result_32 <= A NOR B;
 			when "1000" => 
+				result_32 <= std_logic_vector(A(31) & shift_right(signed(A),1));
 			when "1001" => 
+				result_32 <= std_logic_vector('0' & shift_right(unsigned(A),1));
 			when "1010" => 
+				result_32 <= std_logic_vector('0' & shift_left(unsigned(A),1));
 			when "1100" => 
+				result_32 <= std_logic_vector(rotate_left(signed(A),1) & A(31));
 			when "1101" => 
+				result_32 <= std_logic_vector(A(0) & rotate_right(signed(A),1));
 			when others =>
+					result_32 <= ('0' &x"00000000");
 		end case;
-		
-		if (result_32 = x"00") then
-			Zero <= '1';
-		else
-			Zero <= '0';
-		end if;
 	end process;
-	Output <= result_32;
-	result_33 <= ('0' & A) + ('0' & B);
-	Cout <= result_33(32);
+	
+Output <= result_32 after 10 ns;
+Cout <= result_34(32) after 10 ns;
+Ovf <= result_34(33) after 10 ns;
+	
 	
 end Behavioral;
 
