@@ -22,7 +22,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx primitives in this code.
@@ -37,13 +37,44 @@ entity RegisterFile is
            Dout2 : out  STD_LOGIC_VECTOR (31 downto 0);
            Din : in  STD_LOGIC_VECTOR (31 downto 0);
            WE : in  STD_LOGIC;
-           CLK : in  STD_LOGIC);
+           CLK : in  STD_LOGIC;
+			  RST: in STD_LOGIC);
 end RegisterFile;
 
 architecture Behavioral of RegisterFile is
+type dataOutArray is array (0 to 31) of STD_LOGIC_VECTOR(31 downto 0);
+signal doa : dataOutArray;
+signal writeAddr, s_dout_1, s_dout_2: STD_LOGIC_VECTOR (31 downto 0);
+
+component SingleRegister is
+    Port ( WE : in  STD_LOGIC;
+           RST : in  STD_LOGIC;
+           CLK : in  STD_LOGIC;
+           Datain : in  STD_LOGIC_VECTOR (31 downto 0);
+           Dataout : out  STD_LOGIC_VECTOR (31 downto 0));
+end component;
+
+component Decoder5To32 is
+    Port ( AddrIn : in  STD_LOGIC_VECTOR (4 downto 0);
+           AddrOut : out  STD_LOGIC_VECTOR (31 downto 0));
+end component;
+
+component mux32_1 is
+    Port ( Control : in  STD_LOGIC_VECTOR (4 downto 0);
+           Input : in STD_LOGIC_VECTOR (1023 downto 0);
+           Output : out  STD_LOGIC_VECTOR (31 downto 0));
+end component;
 
 begin
 
+decoder: Decoder5To32 port map (Adw, writeAddr);
 
+gen: for i in 0 to 31 generate
+		aRegister: SingleRegister port map (writeAddr(i) AND WE, RST, CLK, Din, doa(i));
+end generate;
+
+Dout1 <= doa(to_integer(unsigned(Adr1)));
+Dout2 <= doa(to_integer(unsigned(Adr2)));
+ 
 end Behavioral;
 
