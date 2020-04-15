@@ -19,6 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -73,8 +74,8 @@ gen: for i in 0 to 31 generate
 		aRegister: SingleRegister port map (writeAddr(i) AND WE, RST, CLK, Din, doa(i));
 end generate;
 
-Dout1 <= doa(to_integer(unsigned(Adr1)));
-Dout2 <= doa(to_integer(unsigned(Adr2)));
+Dout1 <= doa(conv_integer(Adr1));
+Dout2 <= doa(conv_integer(Adr2));
  
 end Behavioral;
 
