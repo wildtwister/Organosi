@@ -32,8 +32,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity DECSTAGE is
     Port ( Instr : in  STD_LOGIC_VECTOR (31 downto 0);
            RF_WrEn : in  STD_LOGIC;
-           ALU_out : out  STD_LOGIC_VECTOR (31 downto 0);
-           MEM_out : out  STD_LOGIC_VECTOR (31 downto 0);
+           ALU_out : in  STD_LOGIC_VECTOR (31 downto 0);
+           MEM_out : in  STD_LOGIC_VECTOR (31 downto 0);
            RF_WrData_sel : in  STD_LOGIC;
            RF_B_sel : in  STD_LOGIC;
            ImmExt : in  STD_LOGIC_VECTOR (1 downto 0);
@@ -42,7 +42,7 @@ entity DECSTAGE is
            RF_A : out  STD_LOGIC_VECTOR (31 downto 0);
            RF_B : out  STD_LOGIC_VECTOR (31 downto 0);
 			  RST: in STD_LOGIC);
-end IDECSTAGE;
+end DECSTAGE;
 
 architecture Behavioral of DECSTAGE is
 
@@ -70,17 +70,17 @@ begin
 	wr_reg <= Instr( 20 downto 16 );
 	instruction <= Instr( 15 downto 0);
 	
-	Immed <= "0x00"; -- pos ftiachnoume to Immed, OEO?
+	Immed <= (others => '0'); -- pos ftiachnoume to Immed, OEO?
 	
 	with RF_WrData_sel select
 		wr_data_sig <= ALU_out when '0',
 											MEM_out when others;
 					
 	with RF_B_sel select
-		read_reg_2 <= reg2 when '0',
+		read_reg2 <= reg2 when '0',
 										  wr_reg when others;
 											
-	r_file : RegisterFile port map (reg_1, read_reg_2, wr_reg, RF_A, RF_B, wr_data_sig, RF_WrEn, Clk, RST);
+	r_file : RegisterFile port map (reg1, read_reg2, wr_reg, RF_A, RF_B, wr_data_sig, RF_WrEn, Clk, RST);
 
 end Behavioral;
 
