@@ -34,15 +34,24 @@ entity SingleRegister is
            RST : in  STD_LOGIC;
            CLK : in  STD_LOGIC;
            Datain : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dataout : in  STD_LOGIC_VECTOR (31 downto 0));
+           Dataout : out  STD_LOGIC_VECTOR (31 downto 0));
 end SingleRegister;
 
 architecture Behavioral of SingleRegister is
-
+signal data : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
 begin
 
+clock_process: process(WE, RST, Datain)
+begin
+		if WE = '1' then
+			data <= Datain;
+		end if;
+		if RST = '1' then 
+			data <=  (others => '0');
+		end if;
+end process clock_process;
 
-
+Dataout <= data;
 
 end Behavioral;
 
