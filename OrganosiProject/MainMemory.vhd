@@ -63,13 +63,13 @@ architecture syn of MainMemory is
 	signal RAM: ram_type := InitRamFromFile("rom.data");
 	
 	begin
-		process (CLK)
+		Write_process: process 
 		begin
-			if rising_edge(CLK) then
+		
 				if data_we = '1' then
 					RAM(conv_integer(data_addr)) <= data_din;
 				end if;
-			end if;
+	
 		end process;
 		
 		data_dout <= RAM(conv_integer(data_addr));
