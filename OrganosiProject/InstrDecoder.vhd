@@ -47,8 +47,8 @@ end DECSTAGE;
 architecture Behavioral of DECSTAGE is
 
 signal reg1, reg2, read_reg2, wr_reg: STD_LOGIC_VECTOR(4 downto 0);
-signal instruction: STD_LOGIC_VECTOR(15 downto 0);
-signal wr_data_sig: STD_LOGIC_VECTOR(31 downto 0);
+signal sig_Immed: STD_LOGIC_VECTOR(15 downto 0);
+signal wr_data_sig, extended_immed: STD_LOGIC_VECTOR(31 downto 0);
 
 
 component RegisterFile is
@@ -68,7 +68,7 @@ begin
 	reg1 <= Instr( 25 downto 21 );
 	reg2 <= Instr( 15 downto 11);
 	wr_reg <= Instr( 20 downto 16 );
-	instruction <= Instr( 15 downto 0);
+	sig_Immed <= Instr( 15 downto 0);
 	
 	Immed <= (others => '0'); -- pos ftiachnoume to Immed, OEO?
 	
@@ -81,6 +81,28 @@ begin
 										  wr_reg when others;
 											
 	r_file : RegisterFile port map (reg1, read_reg2, wr_reg, RF_A, RF_B, wr_data_sig, RF_WrEn, Clk, RST);
+	
+	ImmedExtProcess: process(ImmExt)
+	begin 
+		
+		-- ImmExt(0) is for Sign Extention/ Zero Filling, ImmExt(1) is for Shifting
+		case ImmExt is
+			when "00" => -- Sign Extend, No Shifting
+				extended_immed(31 downto 16) <= (others => sig_Immed(15));
+				extended_immed(15 downto 0) <= sig_Immed;
+			when "01" => -- Zero Filling, No Shifting
+				extended_immed(31 downto 16) <= sig_Immed;
+				extended_immed(15 downto 0) <= (others => '0');
+			when "10" => -- Sign Extend, Shifting
+				extended_immed(31 downto 18) <= (others => sig_Immed(15));
+				extended_immed(17 downto 2) <= sig_Immed;
+				extended_immed(1 downto 0) <= "00";
+			when others =>
+				extended_immed <= x"00000000";
+		end case;
+	end process;
+	
+	Immed <= extended_immed;
 
 end Behavioral;
 
