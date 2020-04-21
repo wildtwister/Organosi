@@ -42,7 +42,8 @@ end ALU;
 
 architecture Behavioral of ALU is
 signal result_32: STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
-signal result_34: STD_LOGIC_VECTOR(33 downto 0) := (others => '0');
+signal result_33: STD_LOGIC_VECTOR(32 downto 0) := (others => '0');
+signal ovf_sig : STD_LOGIC := '0';
 begin
 
 	op_choice: process(A,B,Op)
@@ -51,8 +52,9 @@ begin
 		case Op is
 			when "0000" => 
 				result_32<= A + B;
-				result_34 <= ("00" & A) + ("00" & B);
+				result_33 <= ('0' & A) + ('0' & B);
 			when "0001" => 
+				result_33 <= ('1' & A) - ('1' & B);
 				result_32<= A - B;
 			when "0010" => 
 				result_32 <= A AND B;
@@ -79,10 +81,35 @@ begin
 		end case;
 	end process;
 	
-Output <= result_32 after 10 ns;
-Cout <= result_34(32) after 10 ns;
-Ovf <= result_34(33) after 10 ns;
+flags: process(Op,result_32, result_33, A,B)
+begin
+
+	if(result_32(31 downto 0) = x"00000000") then
+		Zero <= '1';
+	else
+		Zero <= '0';
+	end if;
 	
+	if (Op = "0000" OR Op = "0001") then
+		Cout <= result_33(32) after 10 ns;
+	else
+		Cout <= '0';
+	end if;
+	
+	if(Op = "0000" OR Op = "0001") then
+		if  ((A(31) XNOR B(31)) = '1' ) then
+			ovf_sig<= A(31) XOR result_32(31);
+		else
+			ovf_sig <= '0';
+		end if;
+	else
+		ovf_sig <= '0';
+	end if;
+
+end process;
+	
+Output <= result_32 after 10 ns;
+Ovf <= ovf_sig after 10 ns;
 	
 end Behavioral;
 
