@@ -77,7 +77,8 @@ begin
 			when "1101" => 
 				result_32 <= std_logic_vector(A(0) & rotate_right(signed(A),1));
 			when others =>
-					result_32 <= ('0' &x"00000000");
+				result_33 <= ('0' &x"00000000");
+				result_32 <= (x"00000000");
 		end case;
 	end process;
 	
