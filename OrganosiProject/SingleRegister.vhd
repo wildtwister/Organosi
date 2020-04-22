@@ -43,12 +43,15 @@ begin
 
 clock_process: process(WE, RST, Datain)
 begin
+	if RST = '1' then 
+			data <=  (others => '0');
+		else
 		if WE = '1' then
 			data <= Datain;
+		else
+			data <= data;
 		end if;
-		if RST = '1' then 
-			data <=  (others => '0');
-		end if;
+	end if;
 end process clock_process;
 
 Dataout <= data;

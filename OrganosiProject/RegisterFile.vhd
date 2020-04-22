@@ -45,7 +45,7 @@ end RegisterFile;
 architecture Behavioral of RegisterFile is
 type dataOutArray is array (0 to 31) of STD_LOGIC_VECTOR(31 downto 0);
 signal doa : dataOutArray;
-signal writeAddr, s_dout_1, s_dout_2: STD_LOGIC_VECTOR (31 downto 0);
+signal writeAddr, s_dout_1, s_dout_2, sig_we: STD_LOGIC_VECTOR (31 downto 0);
 
 component SingleRegister is
     Port ( WE : in  STD_LOGIC;
@@ -60,19 +60,16 @@ component Decoder5To32 is
            AddrOut : out  STD_LOGIC_VECTOR (31 downto 0));
 end component;
 
-component mux32_1 is
-    Port ( Control : in  STD_LOGIC_VECTOR (4 downto 0);
-           Input : in STD_LOGIC_VECTOR (1023 downto 0);
-           Output : out  STD_LOGIC_VECTOR (31 downto 0));
-end component;
-
 begin
 
 decoder: Decoder5To32 port map (Adw, writeAddr);
 
 gen: for i in 0 to 31 generate
-		aRegister: SingleRegister port map (writeAddr(i) AND WE, RST, CLK, Din, doa(i));
+		sig_we(i) <= writeAddr(i) AND WE after 5 ns;
+		aRegister: SingleRegister port map (sig_we(i), RST, CLK, Din, doa(i));
 end generate;
+
+	
 
 Dout1 <= doa(conv_integer(Adr1));
 Dout2 <= doa(conv_integer(Adr2));
