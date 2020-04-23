@@ -27,7 +27,8 @@
 --------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
- 
+use ieee.std_logic_unsigned.all;
+use IEEE.NUMERIC_STD.ALL;
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --USE ieee.numeric_std.ALL;
@@ -90,12 +91,24 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
-      wait for 100 ns;	
-		PC_sel <='0';		 wait for 100 ns;
+		wait for 100 ns;
+		Reset <= '1';
+		PC_sel <='0';
+		PC_Immed <="00000000000000000000000000000001";
+		PC_LdEn <= '0';
+		wait for 100 ns;
+		Reset <= '0';
+		PC_sel <='0';
+		PC_Immed <="00000000000000000000000000000001";
+		PC_LdEn <= '1';
+		wait for 100 ns;
+		Reset <= '0';
 		PC_sel <='1';
 		PC_Immed <="00000000000000000000000000000001";
-      -- insert stimulus here 
-
+		PC_LdEn <= '1';
+      -- insert stimulus here
+		
+      -- insert stimulus here
       wait;
    end process;
 
