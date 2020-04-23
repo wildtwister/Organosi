@@ -46,7 +46,7 @@ component SingleRegister is
            RST : in  STD_LOGIC;
            CLK : in  STD_LOGIC;
            Datain : in  STD_LOGIC_VECTOR (31 downto 0);
-           Dataout : in  STD_LOGIC_VECTOR (31 downto 0));
+           Dataout : out  STD_LOGIC_VECTOR (31 downto 0));
 end component;
 
 signal adder1: STD_LOGIC_VECTOR(31 downto 0);
