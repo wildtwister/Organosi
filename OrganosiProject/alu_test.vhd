@@ -163,6 +163,10 @@ BEGIN
 		Op <= "0110"; --NOR
 		
 		--Shifting Testing
+		
+		A <= x"80000001";
+		Op <= "1000"; --SL MSB
+		
 
    end process;
 
