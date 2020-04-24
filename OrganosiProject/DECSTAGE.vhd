@@ -102,12 +102,15 @@ begin
 				extended_immed(31 downto 16) <= (others => sig_Immed(15));
 				extended_immed(15 downto 0) <= sig_Immed;
 			when "01" => -- Zero Filling, No Shifting
-				extended_immed(31 downto 16) <= sig_Immed;
-				extended_immed(15 downto 0) <= (others => '0');
+				extended_immed(31 downto 16) <= (others => '0');
+				extended_immed(15 downto 0) <= sig_Immed;
 			when "10" => -- Sign Extend, Shifting
 				extended_immed(31 downto 18) <= (others => sig_Immed(15));
 				extended_immed(17 downto 2) <= sig_Immed;
 				extended_immed(1 downto 0) <= "00";
+			when "11" => -- Zero Filling, Shifting
+				extended_immed(31 downto 16) <= sig_Immed;
+				extended_immed(15 downto 0) <= (others => '0');
 			when others =>
 				extended_immed <= x"00000000";
 		end case;
