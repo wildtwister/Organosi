@@ -66,7 +66,7 @@ begin
 				MM_WrData <=MM_RdData(31 downto 24) & MEM_DataIn(23 downto 16) & MM_RdData(15 downto 0);
 				MEM_DataOut <= x"000000" & MM_RdData(23 downto 16);	
 			elsif(Bit_control ="11") then
-				MM_WrData <=  MEM_DataIn(31 downto 24) &  MM_RdData(23 downto 0;
+				MM_WrData <=  MEM_DataIn(31 downto 24) &  MM_RdData(23 downto 0);
 				MEM_DataOut <= x"000000" & MM_RdData(31 downto 24);
 			else
 			MM_WrData <= x"00000000";
