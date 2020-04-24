@@ -57,16 +57,16 @@ begin
 			MEM_DataOut <= MM_RdData;
 		elsif ByteOp = '1' then
 			if(Bit_control ="00") then
-				MM_WrData <=MM_RdData(31 downto 8) & MEM_DataIn(7 downto 0);
+				MM_WrData <=x"000000" & MEM_DataIn(7 downto 0);
 				MEM_DataOut <= x"000000" & MM_RdData(7 downto 0);
 			elsif(Bit_control ="01") then
-				MM_WrData <=MM_RdData(31 downto 16) & MEM_DataIn(15 downto 8) & MM_RdData(7 downto 0);
+				MM_WrData <= x"000000"& MEM_DataIn(15 downto 8);
 				MEM_DataOut <= x"000000" & MM_RdData(15 downto 8);		
 			elsif(Bit_control ="10") then
-				MM_WrData <=MM_RdData(31 downto 24) & MEM_DataIn(23 downto 16) & MM_RdData(15 downto 0);
+				MM_WrData <= x"000000" & MEM_DataIn(23 downto 16);
 				MEM_DataOut <= x"000000" & MM_RdData(23 downto 16);	
 			elsif(Bit_control ="11") then
-				MM_WrData <=  MEM_DataIn(31 downto 24) &  MM_RdData(23 downto 0);
+				MM_WrData <=  x"000000" & MEM_DataIn(31 downto 24);
 				MEM_DataOut <= x"000000" & MM_RdData(31 downto 24);
 			else
 			MM_WrData <= x"00000000";
