@@ -91,17 +91,31 @@ BEGIN
    begin		
 		ByteOp <= '0';
 		MEM_WrEn <= '0';
-		ALU_MEM_Addr <= (others => '0');
-		MEM_DataIn <= (others => '0');
-		MM_RdData <= (others => '0');
+		ALU_MEM_Addr <="00000000000000000000000000000000";
+		MEM_DataIn <= "00000000000001000000000001100000";
+		MM_RdData <= "00000001000000000100000000000001";
 		wait for 200 ns;
 		
-		ByteOp <= '0';
+		ByteOp <= '1';
 		MEM_WrEn <= '1';
-		ALU_MEM_Addr <= (others => '1');
-		MEM_DataIn <= (others => '0');
-		MM_RdData <= (others => '0');
+		ALU_MEM_Addr <= "00000000000000000000000000000000";
+		MEM_DataIn <="11000000000000000000000000000011"; 
+		MM_RdData <="00110000000000000000000110000111"; 
 		wait for 200 ns;	
+		
+		ByteOp <= '1';
+		MEM_WrEn <= '0';
+		ALU_MEM_Addr <= "00100000000000000000000000000010";
+		MEM_DataIn <="11000000000011000000000000000011"; 
+		MM_RdData <="00110000000000000000000110000111"; 
+		wait for 200 ns;	
+		
+		ByteOp <= '0';
+		MEM_WrEn <= '0';
+		ALU_MEM_Addr <= "00100000000000000000000000000001";
+		MEM_DataIn <="11000100000011000000000000000011"; 
+		MM_RdData <="00110000000000000000000110011111"; 
+		wait for 200 ns;
 		wait;
 		end process;
 
