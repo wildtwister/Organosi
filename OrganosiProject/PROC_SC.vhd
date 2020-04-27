@@ -31,7 +31,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity PROC_SC is
     Port ( RST : in  STD_LOGIC;
-           CLK : in  STD_LOGIC);
+           CLK : in  STD_LOGIC;
+			  Dout : out  STD_LOGIC_VECTOR (31 downto 0);
+			  CurAddr : out  STD_LOGIC_VECTOR (10 downto 0));
 end PROC_SC;
 
 architecture Behavioral of PROC_SC is
@@ -66,6 +68,7 @@ component CONTROL is
     Port ( EX_ALU_Bin_sel : out  STD_LOGIC;
            EX_ALU_func : out  STD_LOGIC_VECTOR (3 downto 0);
            EX_ALU_zero : in  STD_LOGIC;
+			  Instruction : in STD_LOGIC_VECTOR (31 downto 0);
 			  DEC_Instr : out  STD_LOGIC_VECTOR (31 downto 0);
            DEC_RF_WrEn : out  STD_LOGIC;
            DEC_RF_WrData_sel : out  STD_LOGIC;
@@ -99,10 +102,12 @@ signal nextInstruction, data_out: STD_LOGIC_VECTOR (31 downto 0);
 
 begin
 
-datapath: DATAPATH Port Map (ALU_Bin_sel, ALU_func, ALU_zero, Instruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, PC, ByteOp, MM_WrEn, MM_Addr, MEM_WrEn, MM_WrData, data_out, RST, CLK);
-control: CONTROL Port Map (ALU_Bin_sel, ALU_func, ALU_zero, nextInstruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, ByteOp, MEM_WrEn, RST, CLK);
-memory: MainMemory Port Map (CLK, PC, nextInstruction, MM_WrEn, MM_WrData, MM_Addr, data_out);
+my_datapath: DATAPATH Port Map (ALU_Bin_sel, ALU_func, ALU_zero, Instruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, PC, ByteOp, MM_WrEn, MM_Addr, MEM_WrEn, MM_WrData, data_out, RST, CLK);
+my_control: CONTROL Port Map (ALU_Bin_sel, ALU_func, ALU_zero, nextInstruction, Instruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, ByteOp, MEM_WrEn, RST, CLK);
+my_memory: MainMemory Port Map (CLK, PC(12 downto 2), nextInstruction, MM_WrEn, MM_WrData, MM_Addr, data_out);
 
+Dout <= nextInstruction;
+CurAddr <= PC(12 downto 2);
 
 end Behavioral;
 

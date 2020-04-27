@@ -56,16 +56,24 @@ signal mux_sig : STD_LOGIC_VECTOR(31 downto 0);
 
 
 begin
-		adder1 <= PC_sig+4 ;
-		adder2 <= adder1+PC_Immed;
 		
-		with PC_sel select
-				mux_sig <= adder1 when '0',
-				adder2 when '1',
-				(others => '0') when others;
-				
 		IFSingleRegister:SingleRegister Port Map(PC_LdEn,Reset,Clk,mux_sig,PC_sig);
 		
-		PC <= PC_sig;
+		process(PC_sig, PC_Immed, PC_sel)
+		begin
+			
+			adder1 <= PC_sig+4 ;
+			adder2 <= adder1+PC_Immed;
+			
+			if (PC_sel = '0') then 
+					mux_sig <= adder1;
+			else
+					mux_sig <= adder2;
+			end if;
+			
+			PC <= PC_sig;
+		end process;
+		
+		
 end Behavioral;
 

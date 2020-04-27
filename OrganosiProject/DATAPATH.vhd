@@ -91,7 +91,7 @@ component IFSTAGE is
            PC : out  STD_LOGIC_VECTOR (31 downto 0));
 end component;
 
-signal IF_PC_Addr :   STD_LOGIC_VECTOR (31 downto 0);
+--signal IF_PC_Addr :   STD_LOGIC_VECTOR (31 downto 0);
 
 component MEMSTAGE is
     Port ( ByteOp : in  STD_LOGIC;
@@ -109,7 +109,7 @@ signal MEM_Dout : STD_LOGIC_VECTOR (31 downto 0);
 
 begin
 
-if_stage: IFSTAGE Port Map(Ext_Immed, IF_PC_sel, IF_PC_LdEn, RST, CLK, IF_PC_Addr);
+if_stage: IFSTAGE Port Map(Ext_Immed, IF_PC_sel, IF_PC_LdEn, RST, CLK, IF_PC);
 dec_stage:DECSTAGE Port Map (DEC_Instr, DEC_RF_WrEn, ALU_result, MEM_Dout, DEC_RF_WrData_sel, DEC_RF_B_sel, DEC_ImmExt, CLK, Ext_Immed, RF_A_sig, RF_B_sig, RST);
 ex_stage:EXSTAGE Port Map (RF_A_sig, RF_B_sig, Ext_Immed, EX_ALU_Bin_sel, EX_ALU_func , ALU_result, EX_ALU_zero);
 mem_stage:MEMSTAGE Port Map (MEM_ByteOp,  MEM_WrEn, ALU_result, RF_B_sig, MEM_Dout, MM_Addr, MM_WrEn, MM_WrData, MM_RdData);
