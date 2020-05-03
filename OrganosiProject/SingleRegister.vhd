@@ -41,15 +41,17 @@ architecture Behavioral of SingleRegister is
 signal data : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
 begin
 
-clock_process: process(WE, RST, Datain)
+clock_process: process(WE, CLK, RST, Datain)
 begin
 	if RST = '1' then 
-			data <=  (others => '0');
-		else
-		if WE = '1' then
-			data <= Datain;
-		else
-			data <= data;
+		data <=  (others => '0');
+	else
+		if rising_edge(CLK) then
+			if WE = '1' then
+				data <= Datain;
+			else
+				data <= data;
+			end if;
 		end if;
 	end if;
 end process clock_process;
