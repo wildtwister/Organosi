@@ -56,20 +56,13 @@ end CONTROL;
 
 architecture Behavioral of CONTROL is
 TYPE FSM_state is(IFstate,EXstate,DECstate,MEMstate,ZEROstate);
+signal currentInstruction : STD_LOGIC_VECTOR (31 downto 0);
 signal func, opcode : STD_LOGIC_VECTOR (5 downto 0);
 signal state,next_state : FSM_state;
 begin
 
-	process(Instruction, CLK, RST, EX_ALU_zero)
+	process(currentInstruction, func, opcode, CLK, RST, EX_ALU_zero)
 	begin
-	
-		if rising_edge(CLK) then
-			opcode <= Instruction(31 downto 26);
-			func<= Instruction(5 downto 0);
-			
-			 if RST='1' then
-				state <= ZEROstate;
-			else 	
 				case state is
 					when ZEROstate =>
 						EX_ALU_func <= func(3 downto 0) ;
@@ -78,7 +71,7 @@ begin
 						IF_PC_LdEn <= '0';
 						MEM_ByteOp <= '0';
 						MEM_WrEn <= '0';
-						DEC_Instr <= Instruction;
+						DEC_Instr <= currentInstruction;
 						DEC_RF_WrEn <= '0' ;
 						DEC_RF_WrData_sel <= '0';
 						DEC_RF_B_sel <= '0';
@@ -200,7 +193,6 @@ begin
 							end case;
 			when MEMstate =>
 					   r_MEM_DataOut_WE <= '1';
-						next_state <= 
 							case opcode is			
 										when "000011" => -- lb DONE
 											
@@ -232,7 +224,7 @@ begin
 				r_RF_A_WE <= '1';
 				r_RF_B_WE <= '1';
 				r_Immed_WE <= '0';
-				DEC_Instr <= Instruction;
+				DEC_Instr <= currentInstruction;
 							case opcode is			
 								when "100000" => --ALU Functions DONE
 									DEC_RF_WrEn <= '1' ;
@@ -352,9 +344,27 @@ begin
 									DEC_ImmExt <= "00";
 									next_state <= ZEROstate;
 							end case;
-			end case;
+						when others =>
+								next_state <= ZEROstate;
+				end case;
+	end process;
+	
+	process(RST, CLK, Instruction, state, next_state)
+	begin
+		if RST = '1' then
+			state <= ZEROstate;
+		elsif rising_edge(CLK) then
+			currentInstruction <= Instruction;
+			opcode <= Instruction(31 downto 26);
+			func<= Instruction(5 downto 0);
+			state <= next_state;
+		else
+			state <= ZEROstate;
 		end if;
 	end process;
+			
+			
+			 
 
 end Behavioral;
 
