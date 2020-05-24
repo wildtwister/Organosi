@@ -29,17 +29,29 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity PROC_SC is
+entity PROCESSOR_MC is
     Port ( RST : in  STD_LOGIC;
            CLK : in  STD_LOGIC;
-			  Dout : out  STD_LOGIC_VECTOR (31 downto 0);
-			  CurAddr : out  STD_LOGIC_VECTOR (10 downto 0));
-end PROC_SC;
+			  FetchAddress: out STD_LOGIC_VECTOR(10 downto 0);
+			  FetchedInstruction: in STD_LOGIC_VECTOR(31 downto 0);
+			  MM_Addr : out  STD_LOGIC_VECTOR (10 downto 0);
+           MM_WrEn : out  STD_LOGIC;
+           MM_WrData : out  STD_LOGIC_VECTOR (31 downto 0);
+           MM_RdData : in  STD_LOGIC_VECTOR (31 downto 0));
+end PROCESSOR_MC;
 
-architecture Behavioral of PROC_SC is
+architecture Behavioral of PROCESSOR_MC is
 
-component DATAPATH is
- Port ( EX_ALU_Bin_sel : in  STD_LOGIC;
+component DATAPATH_MC is
+ Port ( r_RF_A_WE : in  STD_LOGIC;
+		     r_RF_B_WE : in  STD_LOGIC;
+			  r_ALU_OUT_WE : in  STD_LOGIC;
+		     r_MEM_OUT_WE : in  STD_LOGIC;
+			  r_PC_WE : in  STD_LOGIC;
+			  r_Immed_WE : in  STD_LOGIC;
+			  r_MEM_DataIn_WE : in  STD_LOGIC;
+			  r_MEM_DataOut_WE : in  STD_LOGIC;
+			  EX_ALU_Bin_sel : in  STD_LOGIC;
            EX_ALU_func : in  STD_LOGIC_VECTOR (3 downto 0);
            EX_ALU_zero : out  STD_LOGIC;
 			  DEC_Instr : in  STD_LOGIC_VECTOR (31 downto 0);
@@ -62,10 +74,19 @@ end component;
 
 signal ALU_zero, MM_WrEn: STD_LOGIC;
 signal MM_WrData, PC : STD_LOGIC_VECTOR (31 downto 0);
-signal  MM_Addr : STD_LOGIC_VECTOR (10 downto 0);
+signal  MEM_Addr, MM_Addr : STD_LOGIC_VECTOR (10 downto 0);
 
 component CONTROL is
-    Port ( EX_ALU_Bin_sel : out  STD_LOGIC;
+    Port ( 
+			  r_RF_A_WE : out  STD_LOGIC;
+		     r_RF_B_WE : out  STD_LOGIC;
+			  r_ALU_OUT_WE : out  STD_LOGIC;
+		     r_MEM_OUT_WE : out  STD_LOGIC;
+			  r_PC_WE : out  STD_LOGIC;
+			  r_Immed_WE : out  STD_LOGIC;
+			  r_MEM_DataIn_WE : out  STD_LOGIC;
+			  r_MEM_DataOut_WE : out  STD_LOGIC;
+			  EX_ALU_Bin_sel : out  STD_LOGIC;
            EX_ALU_func : out  STD_LOGIC_VECTOR (3 downto 0);
            EX_ALU_zero : in  STD_LOGIC;
 			  Instruction : in STD_LOGIC_VECTOR (31 downto 0);
@@ -82,32 +103,15 @@ component CONTROL is
 			  CLK : in STD_LOGIC);
 end component;
 
-signal ALU_Bin_sel, RF_WrEn, RF_WrData_sel, RF_B_sel, PC_sel, PC_LdEn, ByteOp, MEM_WrEn: STD_LOGIC;
+signal  r_RF_A_WE , r_RF_B_WE, r_ALU_OUT_WE, r_MEM_OUT_WE , r_PC_WE, r_Immed_WE, r_MEM_DataIn_WE, r_MEM_DataOut_WE ,ALU_Bin_sel, RF_WrEn, RF_WrData_sel, RF_B_sel, PC_sel, PC_LdEn, ByteOp, MEM_WrEn: STD_LOGIC;
 signal Instruction: STD_LOGIC_VECTOR (31 downto 0);
 signal ALU_func: STD_LOGIC_VECTOR (3 downto 0);
 signal ImmExt : STD_LOGIC_VECTOR (1 downto 0);
 
-component MainMemory is
-    Port ( CLK : in  STD_LOGIC;
-           inst_addr : in  STD_LOGIC_VECTOR (10 downto 0);
-           inst_dout : out  STD_LOGIC_VECTOR (31 downto 0);
-           data_we : in  STD_LOGIC;
-           data_din : in  STD_LOGIC_VECTOR (31 downto 0);
-           data_addr : in  STD_LOGIC_VECTOR (10 downto 0);
-           data_dout : out  STD_LOGIC_VECTOR (31 downto 0));
-end component;
-
-signal nextInstruction, data_out: STD_LOGIC_VECTOR (31 downto 0);
-
-
 begin
 
-my_datapath: DATAPATH Port Map (ALU_Bin_sel, ALU_func, ALU_zero, Instruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, PC, ByteOp, MM_WrEn, MM_Addr, MEM_WrEn, MM_WrData, data_out, RST, CLK);
-my_control: CONTROL Port Map (ALU_Bin_sel, ALU_func, ALU_zero, nextInstruction, Instruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, ByteOp, MEM_WrEn, RST, CLK);
-my_memory: MainMemory Port Map (CLK, PC(12 downto 2), nextInstruction, MM_WrEn, MM_WrData, MM_Addr, data_out);
-
-Dout <= nextInstruction;
-CurAddr <= PC(12 downto 2);
+my_datapath: DATAPATH_MC Port Map ( r_RF_A_WE , r_RF_B_WE, r_ALU_OUT_WE, r_MEM_OUT_WE , r_PC_WE, r_Immed_WE, r_MEM_DataIn_WE, r_MEM_DataOut_WE, ALU_Bin_sel, ALU_func, ALU_zero, Instruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, PC, ByteOp, MM_WrEn, MM_Addr, MEM_WrEn, MM_WrData, data_out, RST, CLK);
+my_control: CONTROL Port Map (ALU_Bin_sel, ALU_func, ALU_zero, FetchedInstruction, Instruction, RF_WrEn, RF_WrData_sel, RF_B_sel, ImmExt, PC_sel, PC_LdEn, ByteOp, MEM_WrEn, RST, CLK);
 
 end Behavioral;
 
