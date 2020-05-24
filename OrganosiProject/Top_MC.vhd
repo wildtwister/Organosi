@@ -57,7 +57,7 @@ component PROCESSOR_MC is
            MM_RdData : in  STD_LOGIC_VECTOR (31 downto 0));
 end component;
 
-signal nextInstruction, mem_data_out, mem_data_in: STD_LOGIC_VECTOR (31 downto 0);
+signal nextInstruction, mem_data_out, mem_write_data: STD_LOGIC_VECTOR (31 downto 0);
 signal fetch_address, data_address: STD_LOGIC_VECTOR(10 downto 0);
 signal mem_write_en: STD_LOGIC;
 
