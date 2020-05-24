@@ -29,7 +29,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity CONTROL is
+entity CONTROL_PIPELINE is
     Port ( EX_ALU_Bin_sel : out  STD_LOGIC;
            EX_ALU_func : out  STD_LOGIC_VECTOR (3 downto 0);
            EX_ALU_zero : in  STD_LOGIC;
@@ -52,9 +52,9 @@ entity CONTROL is
 			  r_MEM_DataOut_WE :out  STD_LOGIC;
            RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC);
-end CONTROL;
+end CONTROL_PIPELINE;
 
-architecture Behavioral of CONTROL is
+architecture Behavioral of CONTROL_PIPELINE is
 TYPE FSM_state is(IFstate,EXstate,DECstate,MEMstate,ZEROstate);
 signal currentInstruction : STD_LOGIC_VECTOR (31 downto 0);
 signal func, opcode : STD_LOGIC_VECTOR (5 downto 0);

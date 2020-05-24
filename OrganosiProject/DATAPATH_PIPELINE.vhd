@@ -29,7 +29,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity DATAPATH_MC is
+entity DATAPATH_PIPELINE is
   Port (r_RF_A_WE : in  STD_LOGIC;
 	r_RF_B_WE : in  STD_LOGIC;
 	r_ALU_OUT_WE : in  STD_LOGIC;
@@ -56,9 +56,9 @@ entity DATAPATH_MC is
 	MM_RdData : in  STD_LOGIC_VECTOR (31 downto 0);
 	RST : in STD_LOGIC;
 	CLK : in STD_LOGIC);
-	end DATAPATH_MC;
+	end DATAPATH_PIPELINE;
 
-architecture Behavioral of DATAPATH_MC is
+architecture Behavioral of DATAPATH_PIPELINE is
 
 component EXSTAGE is
     Port ( RF_A : in  STD_LOGIC_VECTOR (31 downto 0);
@@ -87,8 +87,7 @@ component DECSTAGE is
 			  RST: in STD_LOGIC);
 end component;
 
-signal Ext_Immed,RF_A_sig, RF_B_sig,Instrsig : STD_LOGIC_VECTOR (31 downto 0);
-signal RF_WrEnsig: STD_LOGIC;
+signal Ext_Immed,RF_A_sig, RF_B_sig : STD_LOGIC_VECTOR (31 downto 0);
 
 component SingleRegister is
     Port ( WE : in  STD_LOGIC;
@@ -109,7 +108,6 @@ component IFSTAGE is
 end component;
 
 signal IF_PC_Addr :   STD_LOGIC_VECTOR (31 downto 0);
-signal PC_LdEnsig:STD_LOGIC;
 
 component MEMSTAGE is
     Port ( ByteOp : in  STD_LOGIC;
@@ -125,20 +123,6 @@ end component;
 
 signal MEM_Dout : STD_LOGIC_VECTOR (31 downto 0);
 
-component Forward is 
-	Port( PC_LdEn	: in STD_LOGIC;
-			rs 		: in STD_LOGIC_VECTOR (4 downto 0);
-			rt			: in STD_LOGIC_VECTOR (4 downto 0);
-			rd_pipeline2	: in STD_LOGIC_VECTOR (4 downto 0);
-			En_pipeline2	: in STD_LOGIC;
-			rd_pipeline3	: in STD_LOGIC_VECTOR (4 downto 0);
-			En_pipeline3	: in STD_LOGIC;
-			A_sel		: out STD_LOGIC_VECTOR (1 downto 0);
-			B_sel		: out STD_LOGIC_VECTOR (1 downto 0));
-end component;
-
-signal A_SEL:STD_LOGIC_VECTOR;
-signal B_SEL:STD_LOGIC_VECTOR;
 begin
 
 RF_A_Reg: SingleRegister Port Map(r_RF_A_WE, RST, CLK, RF_A_sig, r_RF_A);
@@ -148,7 +132,7 @@ ALU_OUT_Reg: SingleRegister Port Map(r_ALU_OUT_WE, RST, CLK, ALU_result, r_ALU_O
 PC_Reg: SingleRegister Port Map(r_PC_WE, RST, CLK, IF_PC_Addr, IF_PC);
 Immed_Reg: SingleRegister Port Map(r_Immed_WE, RST, CLK, Ext_Immed, r_Immed);
 MEM_DataOut_Reg: SingleRegister Port Map(r_MEM_DataOut_WE, RST, CLK, MEM_Dout, r_MEM_DataOut);
-Forwarding:Forward Port Map(PC_LdEnsig,Instrsig(25 downto 21),Instrsig(15 downto 11),Instrsig(20 downto 16),RF_WrEnsig,Instrsig(20 downto 16),RF_WrEnsig,A_SEL,B_SEL);
+
 
 if_stage: IFSTAGE Port Map(r_Immed, IF_PC_sel, IF_PC_LdEn, RST, CLK, IF_PC_Addr);
 dec_stage:DECSTAGE Port Map (DEC_Instr, DEC_RF_WrEn, r_ALU_OUT, r_MEM_DataOut, DEC_RF_WrData_sel, DEC_RF_B_sel, DEC_ImmExt, CLK, Ext_Immed, RF_A_sig, RF_B_sig, RST);
@@ -157,4 +141,3 @@ mem_stage:MEMSTAGE Port Map (MEM_ByteOp,  MEM_WrEn, r_ALU_OUT, r_RF_B, MEM_Dout,
 
 
 end Behavioral;
-
