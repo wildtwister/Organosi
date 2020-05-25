@@ -36,6 +36,7 @@ entity DATAPATH_MC is
 	r_MEM_OUT_WE : in  STD_LOGIC;
 	r_PC_WE : in  STD_LOGIC;
 	r_Immed_WE : in  STD_LOGIC;
+	r_MEM_DataIn_WE: in  STD_LOGIC;
 	r_MEM_DataOut_WE : in  STD_LOGIC;
 	EX_ALU_Bin_sel : in  STD_LOGIC;
 	EX_ALU_func : in  STD_LOGIC_VECTOR (3 downto 0);
@@ -141,4 +142,3 @@ mem_stage:MEMSTAGE Port Map (MEM_ByteOp,  MEM_WrEn, r_ALU_OUT, r_RF_B, MEM_Dout,
 
 
 end Behavioral;
-

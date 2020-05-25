@@ -36,7 +36,7 @@ entity MEMSTAGE is
            ALU_MEM_Addr : in  STD_LOGIC_VECTOR (31 downto 0);
            MEM_DataIn : in  STD_LOGIC_VECTOR (31 downto 0);
            MEM_DataOut : out  STD_LOGIC_VECTOR (31 downto 0);
-           MM_Addr : out  STD_LOGIC_VECTOR (31 downto 0);
+           MM_Addr : out  STD_LOGIC_VECTOR (10 downto 0);
            MM_WrEn : out  STD_LOGIC;
            MM_WrData : out  STD_LOGIC_VECTOR (31 downto 0);
            MM_RdData : in  STD_LOGIC_VECTOR (31 downto 0));

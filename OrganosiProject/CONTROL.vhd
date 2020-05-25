@@ -49,6 +49,7 @@ entity CONTROL is
 			  r_MEM_OUT_WE : out  STD_LOGIC;
 			  r_PC_WE : out  STD_LOGIC;
 			  r_Immed_WE : out  STD_LOGIC;
+			  r_MEM_DataIn_WE:out  STD_LOGIC;
 			  r_MEM_DataOut_WE :out  STD_LOGIC;
            RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC);
@@ -151,11 +152,11 @@ begin
 									next_state <= DECstate;
 
 
-								when "111111" => --b DONE
+								--when "111111" => --b DONE
 
-									IF_PC_sel <= '1';
-									IF_PC_LdEn <= '1';
-									next_state <= ZEROstate;
+								--	IF_PC_sel <= '1';
+								--	IF_PC_LdEn <= '1';
+								--	next_state <= ZEROstate;
 
 								when "000000" => -- beq DONE
 									if (EX_ALU_zero = '0') then
