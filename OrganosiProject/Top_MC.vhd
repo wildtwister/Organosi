@@ -67,4 +67,3 @@ my_memory: MainMemory Port Map (CLK, fetch_address, nextInstruction, mem_write_e
 processor: PROCESSOR_MC Port Map (RST, CLK,  fetch_address, nextInstruction, data_address, mem_write_en, mem_write_data, mem_data_out);
 
 end Behavioral;
-

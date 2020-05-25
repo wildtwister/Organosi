@@ -168,5 +168,5 @@ MM_WrEn <= s_MM_WrEn;
 MM_WrData <= s_MM_WrData;
 FetchAddress <= PC(12 downto 2);
 
-end Behavioral;
 
+end Behavioral;
