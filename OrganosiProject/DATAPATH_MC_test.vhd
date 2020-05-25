@@ -62,7 +62,7 @@ ARCHITECTURE behavior OF DATAPATH_MC_test IS
          IF_PC : OUT  std_logic_vector(31 downto 0);
          MEM_ByteOp : IN  std_logic;
          MEM_WrEn : IN  std_logic;
-         MM_Addr : OUT  std_logic_vector(31 downto 0);
+         MM_Addr : OUT  std_logic_vector(10 downto 0);
          MM_WrEn : OUT  std_logic;
          MM_WrData : OUT  std_logic_vector(31 downto 0);
          MM_RdData : IN  std_logic_vector(31 downto 0);
@@ -99,7 +99,7 @@ ARCHITECTURE behavior OF DATAPATH_MC_test IS
  	--Outputs
    signal EX_ALU_zero : std_logic;
    signal IF_PC : std_logic_vector(31 downto 0);
-   signal MM_Addr : std_logic_vector(31 downto 0);
+   signal MM_Addr : std_logic_vector(10 downto 0);
    signal MM_WrEn : std_logic;
    signal MM_WrData : std_logic_vector(31 downto 0);
 

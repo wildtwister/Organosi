@@ -363,8 +363,7 @@ begin
 			state <= ZEROstate;
 		end if;
 	end process;
-			
-			
+
 			 
 
 end Behavioral;

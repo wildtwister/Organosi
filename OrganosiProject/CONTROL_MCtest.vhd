@@ -138,6 +138,17 @@ BEGIN
    stim_proc: process
    begin		
       -- hold reset state for 100 ns.
+		EX_ALU_zero <= '0';
+		Instruction <= "00000000000000000000000000000000";
+		RST <= '1';
+      wait for 100 ns;	
+		EX_ALU_zero <= '0';
+		Instruction <= "00000000000000001110000000000000";
+		RST <= '0';
+      wait for 100 ns;	
+		EX_ALU_zero <= '1';
+		Instruction <= "11000000000000001110000000000000";
+		RST <= '0';
       wait for 100 ns;	
 
       wait for CLK_period*10;
