@@ -1,0 +1,42 @@
+li $1, 1 				--$1 = 1
+sw $1, 80($0) 				--MEM[20] = 1
+li $1, 2 				--$1 = 2
+sw $1, 80($0) 				--MEM[21] = 2
+li $1, 3 				--$1 = 3
+sw $1, 80($0) 				--MEM[22] = 3
+li $1, 4 				--$1 = 4
+sw $1, 80($0) 				--MEM[23] = 4
+li $1, 10 				--$1 = 10
+li $2, 11 				--$2 = 11
+li $3, 12 				--$3 = 12
+li $4, 13 				--$4 = 13
+lui $5, x"F0F0"				--$5 = x"F0F00000"
+ori $5, $5, x"F0F0" 			--$5 = x"F0F0F0F0"
+lui $6, x"0F0F"				--$6 = x"0F0F0000"
+ori $6, $6, x"0F0F" 			--$6 = x"0F0F0F0F"
+lui $7, x"0808"				--$7 = x"08080000"
+ori $7, $7, x"0808" 			--$7 = x"08080808"
+lui $8, x"0203"				--$8 = x"02030000"
+ori $8, $8, x"0405" 			--$8 = x"02030405"	
+li $9, 4 				--$9 = 4
+sw $4, 0($0)				--MEM[0] = 13
+sw $3, 4($0)				--MEM[1] = 12
+sw $8, 20($0)				--MEM[5] = x"02030405"
+sw $6, 24($0)				--MEM[6] = x"0F0F0F0F"
+cmov $4, $14, $1			-- $14 = 13
+cmov $3, $15, $0			-- nop
+cmov $2, $16, $2			-- $16 = 11
+add_MMX_byte $5, $17, $6 		-- $17 = x"FFFFFFFF"
+add_MMX_byte $7, $18, $8 		-- $18 = x"0A0B0C0D"
+branch_equal_reg_mem $9, $14, 0 	-- PC = PC + 4 + 4 = 128
+li $1, x"FFFF" 				-- NOP
+branch_equal_reg_mem $9, $3, 1 		-- PC = PC + 4 + 4 = 136
+li $1, x"FFFF" 				-- NOP
+branch_equal_reg_mem $9, $3, 20		-- PC = PC + 4 = 140
+li $10, 16 				-- $10 = 16
+branch_not_equal_mem $0, $9, 4		-- PC = PC + 4 + 4 = 152
+li $1, x"FFFF" 				-- NOP
+branch_not_equal_mem $3, $3, 256	-- PC = PC + 4 = 156
+byte_pack_mem $21, $1, 70 		-- $21 = MEM[23](7:0)&MEM[22](7:0)&MEM[21](7:0)&MEM[20](7:0) = x"04030201"
+byte_unpack_mem $1, $8, 90 		-- MEM[25] = 5, MEM[26] = 4, MEM[27] = 3, MEM[28] = 2
+
