@@ -36,7 +36,7 @@ entity MEMSTAGE is
            ALU_MEM_Addr : in  STD_LOGIC_VECTOR (31 downto 0);
            MEM_DataIn : in  STD_LOGIC_VECTOR (31 downto 0);
            MEM_DataOut : out  STD_LOGIC_VECTOR (31 downto 0);
-           MM_Addr : out  STD_LOGIC_VECTOR (31 downto 0);
+           MM_Addr : out  STD_LOGIC_VECTOR (10 downto 0);
            MM_WrEn : out  STD_LOGIC;
            MM_WrData : out  STD_LOGIC_VECTOR (31 downto 0);
            MM_RdData : in  STD_LOGIC_VECTOR (31 downto 0));
@@ -46,9 +46,9 @@ architecture behavior of MEMSTAGE is
 signal Bit_control :STD_LOGIC_VECTOR (1 downto 0);
 signal AluMem11:STD_LOGIC_VECTOR (10 downto 0);
 begin
-	AluMem11<=ALU_MEM_Addr(12 downto 2);
+	AluMem11 <=ALU_MEM_Addr(12 downto 2);
 	MM_WrEn <= MEM_WrEn;
-	MM_Addr(10 downto 0)<=AluMem11 + 1024;
+	MM_Addr <=AluMem11 + 1024;
 	Bit_control <= AluMem11(1 downto 0);
 	process(ByteOp)
 	begin

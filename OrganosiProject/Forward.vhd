@@ -21,48 +21,43 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity Forward is
-	port( PC_LdEn	: in STD_LOGIC;
-			rs 		: in STD_LOGIC_VECTOR (4 downto 0);
-			rt			: in STD_LOGIC_VECTOR (4 downto 0);
-			rd_pipe2	: in STD_LOGIC_VECTOR (4 downto 0);
-			En_pipe2	: in STD_LOGIC;
-			rd_pipe3	: in STD_LOGIC_VECTOR (4 downto 0);
-			En_pipe3	: in STD_LOGIC;
-			A_sel		: out STD_LOGIC_VECTOR (1 downto 0);
-			B_sel		: out STD_LOGIC_VECTOR (1 downto 0)
+	port(	p_DECEX	: in STD_LOGIC_VECTOR (31 downto 0);
+				p_EXMEM	: in STD_LOGIC_VECTOR (31 downto 0);
+				p_MEMWB : in STD_LOGIC_VECTOR (31 downto 0);
+				A_sel		: out STD_LOGIC_VECTOR (1 downto 0);
+				B_sel		: out STD_LOGIC_VECTOR (1 downto 0)
 			);
 end Forward;
 
 architecture Behavioral of Forward is
-
+signal s_DEC_Rs, s_DEC_Rt, s_EX_Rd, s_MEM_Rd: STD_LOGIC_VECTOR (4 downto 0);
+signal s_EX_WrReg, s_MEM_WrReg : STD_LOGIC;
 begin
 
-process(rs,rt,En_pipe2,En_pipe3)
+s_EX_WrReg <= p_EXMEM(16);
+s_MEM_WrReg <= p_MEMWB(16);
+s_DEC_Rs <= p_DECEX( 14 downto 10 );
+s_DEC_Rt <= p_DECEX( 4 downto 0 );
+s_EX_Rd <= p_EXMEM( 9 downto 5 );
+s_MEM_Rd <= p_MEMWB( 9 downto 5 );
+process( s_DEC_Rs, s_DEC_Rt, s_EX_Rd, s_MEM_Rd,s_EX_WrReg, s_MEM_WrReg)
 begin
-	if((rs = rd_pipe2 OR rt = rd_pipe2) AND En_pipe2 = '1' AND PC_LdEn = '1') then
-		if(rs = rd_pipe2) then
-			A_sel <= "01";
-		else
-			A_sel <= "00";
-		end if;
-		if(rt = rd_pipe2) then
-			B_sel <= "01";
-		else
-			B_sel <= "00";
-		end if;
-	elsif((rs = rd_pipe3 OR rt = rd_pipe3) AND En_pipe3 = '1' AND PC_LdEn = '1') then
-		if(rs = rd_pipe3) then
-			A_sel <= "10";
-		else
-			A_sel <= "00";
-		end if;
-		if(rt = rd_pipe3) then
-			B_sel <= "10";
-		else
-			B_sel <= "00";
-		end if;
+
+	-- Forward A
+	if((s_EX_WrReg = '1') AND (s_EX_Rd /= "00000") AND (s_DEC_Rs = s_EX_Rd)) then
+		A_sel <= "10";
+	elsif((s_MEM_WrReg = '1') AND (s_MEM_Rd /= "00000") AND (s_DEC_Rs = s_MEM_Rd)) then
+		A_sel <= "01";
 	else
 		A_sel <= "00";
+	end if;
+	
+	-- Forward B
+	if((s_EX_WrReg = '1') AND (s_EX_Rd /= "00000") AND (s_DEC_Rt = s_EX_Rd)) then
+		B_sel <= "10";
+	elsif((s_MEM_WrReg = '1') AND (s_MEM_Rd /= "00000") AND (s_DEC_Rt = s_MEM_Rd)) then
+		B_sel <= "01";
+	else
 		B_sel <= "00";
 	end if;
 end process;

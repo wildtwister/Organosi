@@ -47,6 +47,43 @@ signal current_state,next_state: state;
 begin
 process (clk)
 	begin
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		if (Reset ='1') then
 			current_state <= C;
 		elsif (rising_edge(clk)) then

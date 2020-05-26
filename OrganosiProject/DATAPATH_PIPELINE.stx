@@ -1,0 +1,88 @@
+Release 14.7 - xst P.20131013 (lin64)
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to /home/beast/workspace/Organosi/OrganosiProject/xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.06 secs
+ 
+--> 
+Parameter xsthdpdir set to /home/beast/workspace/Organosi/OrganosiProject/xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.06 secs
+ 
+--> 
+Reading design: DATAPATH_PIPELINE.prj
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Parsing
+  3) HDL Elaboration
+  4) HDL Synthesis
+       4.1) HDL Synthesis Report
+  5) Advanced HDL Synthesis
+       5.1) Advanced HDL Synthesis Report
+  6) Low Level Synthesis
+  7) Partition Report
+  8) Design Summary
+       8.1) Primitive and Black Box Usage
+       8.2) Device utilization summary
+       8.3) Partition Resource Summary
+       8.4) Timing Report
+            8.4.1) Clock Information
+            8.4.2) Asynchronous Control Signals Information
+            8.4.3) Timing Summary
+            8.4.4) Timing Details
+            8.4.5) Cross Clock Domains Report
+
+
+=========================================================================
+*                          HDL Parsing                                  *
+=========================================================================
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/SingleRegister.vhd" into library work
+Parsing entity <SingleRegister>.
+Parsing architecture <Behavioral> of entity <singleregister>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/Decoder5To32.vhd" into library work
+Parsing entity <Decoder5To32>.
+Parsing architecture <Behavioral> of entity <decoder5to32>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/RegisterFile.vhd" into library work
+Parsing entity <RegisterFile>.
+Parsing architecture <Behavioral> of entity <registerfile>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/ALU.vhd" into library work
+Parsing entity <ALU>.
+Parsing architecture <Behavioral> of entity <alu>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/MEMSTAGE.vhd" into library work
+Parsing entity <MEMSTAGE>.
+Parsing architecture <behavior> of entity <memstage>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/IFSTAGE.vhd" into library work
+Parsing entity <IFSTAGE>.
+Parsing architecture <Behavioral> of entity <ifstage>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/Forward.vhd" into library work
+Parsing entity <Forward>.
+Parsing architecture <Behavioral> of entity <forward>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/EXSTAGE.vhd" into library work
+Parsing entity <EXSTAGE>.
+Parsing architecture <Behavioral> of entity <exstage>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/DECSTAGE.vhd" into library work
+Parsing entity <DECSTAGE>.
+Parsing architecture <Behavioral> of entity <decstage>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/DATAPATH_PIPELINE.vhd" into library work
+Parsing entity <DATAPATH_PIPELINE>.
+Parsing architecture <Behavioral> of entity <datapath_pipeline>.
+
+
+Total REAL time to Xst completion: 7.00 secs
+Total CPU time to Xst completion: 7.19 secs
+ 
+--> 
+
+
+Total memory usage is 326768 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :    0 (   0 filtered)
+Number of infos    :    0 (   0 filtered)
+

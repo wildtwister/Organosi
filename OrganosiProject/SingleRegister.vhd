@@ -46,10 +46,12 @@ begin
 	if RST = '1' then 
 			data <=  (others => '0');
 		else
-		if WE = '1' then
-			data <= Datain;
-		else
-			data <= data;
+		if rising_edge(CLK) then
+			if WE = '1' then
+				data <= Datain;
+			else
+				data <= data;
+			end if;
 		end if;
 	end if;
 end process clock_process;

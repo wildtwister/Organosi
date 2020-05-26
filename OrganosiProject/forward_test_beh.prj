@@ -1,0 +1,2 @@
+vhdl work "Forward.vhd"
+vhdl work "forward_test.vhd"
