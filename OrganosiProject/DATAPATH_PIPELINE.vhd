@@ -195,7 +195,8 @@ if_stage: IFSTAGE Port Map(
 					r_Immed, 
 					IF_PC_sel, 
 					IF_PC_LdEn, 
-					RST, CLK, 
+					RST, 
+					CLK, 
 					IF_PC_Addr
 	);
 dec_stage:DECSTAGE Port Map (
@@ -225,7 +226,7 @@ mem_stage:MEMSTAGE Port Map (
 					p_EXMEM_Content(18),  
 					p_EXMEM_Content(17), 
 					r_ALU_OUT, 
-					r_RF_B, 
+					r_MEM_DataIn, 
 					MEM_Dout, 
 					MM_Addr, 
 					MM_WrEn, 
