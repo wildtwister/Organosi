@@ -4,18 +4,18 @@ Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
 Parameter TMPDIR set to /home/beast/workspace/Organosi/OrganosiProject/xst/projnav.tmp
 
 
-Total REAL time to Xst completion: 1.00 secs
-Total CPU time to Xst completion: 0.04 secs
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.08 secs
  
 --> 
 Parameter xsthdpdir set to /home/beast/workspace/Organosi/OrganosiProject/xst
 
 
-Total REAL time to Xst completion: 1.00 secs
-Total CPU time to Xst completion: 0.05 secs
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.08 secs
  
 --> 
-Reading design: DATAPATH_PIPELINE.prj
+Reading design: Top_PIPELINE.prj
 
 TABLE OF CONTENTS
   1) Synthesis Options Summary
@@ -78,17 +78,30 @@ Parsing architecture <Behavioral> of entity <clockedsingleregister>.
 Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/DATAPATH_PIPELINE.vhd" into library work
 Parsing entity <DATAPATH_PIPELINE>.
 Parsing architecture <Behavioral> of entity <datapath_pipeline>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/CONTROL_PIPELINE.vhd" into library work
+Parsing entity <CONTROL_PIPELINE>.
+Parsing architecture <Behavioral> of entity <control_pipeline>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/PROC_PIPELINE.vhd" into library work
+Parsing entity <PROCESSOR_PIPELINE>.
+Parsing architecture <Behavioral> of entity <processor_pipeline>.
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/MainMemory.vhd" into library work
+Parsing entity <MainMemory>.
+Parsing architecture <syn> of entity <mainmemory>.
+WARNING:HDLCompiler:1369 - "/home/beast/workspace/Organosi/OrganosiProject/MainMemory.vhd" Line 66: Possible infinite loop; process does not have a wait statement
+Parsing VHDL file "/home/beast/workspace/Organosi/OrganosiProject/Top_PIPELINE.vhd" into library work
+Parsing entity <Top_PIPELINE>.
+Parsing architecture <Behavioral> of entity <top_pipeline>.
 
 
-Total REAL time to Xst completion: 9.00 secs
-Total CPU time to Xst completion: 8.90 secs
+Total REAL time to Xst completion: 10.00 secs
+Total CPU time to Xst completion: 9.19 secs
  
 --> 
 
 
-Total memory usage is 326772 kilobytes
+Total memory usage is 327452 kilobytes
 
 Number of errors   :    0 (   0 filtered)
-Number of warnings :    0 (   0 filtered)
+Number of warnings :    1 (   0 filtered)
 Number of infos    :    0 (   0 filtered)
 

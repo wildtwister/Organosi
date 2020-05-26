@@ -29,7 +29,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity CONTROL is
+entity CONTROL_PIPELINE is
     Port ( EX_ALU_Bin_sel : out  STD_LOGIC;
            EX_ALU_func : out  STD_LOGIC_VECTOR (3 downto 0);
            EX_ALU_zero : in  STD_LOGIC;
@@ -45,9 +45,9 @@ entity CONTROL is
            MEM_WrEn : out  STD_LOGIC;
            RST : in STD_LOGIC;
 			  CLK : in STD_LOGIC);
-end CONTROL;
+end CONTROL_PIPELINE ;
 
-architecture Behavioral of CONTROL is
+architecture Behavioral of CONTROL_PIPELINE  is
 signal func, opcode : STD_LOGIC_VECTOR (5 downto 0);
 begin
 
@@ -58,7 +58,7 @@ begin
 			func<= Instruction(5 downto 0);
 			case opcode is
 				when "100000" => --ALU Functions DONE
-					EX_ALU_func <= func(3 downto 0) ;
+					EX_ALU_func <= func(3 downto 0);
 					EX_ALU_Bin_sel <= '0';
 					IF_PC_sel <= '0';
 					IF_PC_LdEn <= '1';

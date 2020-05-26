@@ -30,15 +30,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity DATAPATH_PIPELINE is
-  Port (r_RF_A_WE : in  STD_LOGIC;
-	r_RF_B_WE : in  STD_LOGIC;
-	r_ALU_OUT_WE : in  STD_LOGIC;
-	r_MEM_OUT_WE : in  STD_LOGIC;
-	r_PC_WE : in  STD_LOGIC;
-	r_Immed_WE : in  STD_LOGIC;
-	r_MEM_DataIn_WE : in STD_LOGIC;
-	r_MEM_DataOut_WE : in  STD_LOGIC;
-	EX_ALU_Bin_sel : in  STD_LOGIC;
+  Port (EX_ALU_Bin_sel : in  STD_LOGIC;
 	EX_ALU_func : in  STD_LOGIC_VECTOR (3 downto 0);
 	EX_ALU_zero : out  STD_LOGIC;
 	DEC_Instr : in  STD_LOGIC_VECTOR (31 downto 0);
@@ -97,6 +89,15 @@ component SingleRegister is
            Datain : in  STD_LOGIC_VECTOR (31 downto 0);
            Dataout : out  STD_LOGIC_VECTOR (31 downto 0));
 end component;
+
+component ClockedSingleRegister is
+    Port ( WE : in  STD_LOGIC;
+           RST : in  STD_LOGIC;
+           CLK : in  STD_LOGIC;
+           Datain : in  STD_LOGIC_VECTOR (31 downto 0);
+           Dataout : out  STD_LOGIC_VECTOR (31 downto 0));
+end component;
+
 signal r_Immed, r_ALU_OUT, r_MEM_OUT, r_RF_A, r_RF_B, r_MEM_DataIn: STD_LOGIC_VECTOR (31 downto 0);
 
 component IFSTAGE is
@@ -133,12 +134,32 @@ end component;
 
 signal MEM_Dout : STD_LOGIC_VECTOR (31 downto 0);
 
+component Hazard is
+			Port(	Clk : in STD_LOGIC;
+						Reset	: in  STD_LOGIC;
+						newInstruction: in STD_LOGIC_VECTOR (31 downto 0);
+						p_DECEX: in STD_LOGIC_VECTOR (31 downto 0);
+						IF_PC_LdEn : out STD_LOGIC;
+						r_PC_En : out  STD_LOGIC;
+						p_DECEX_En : out  STD_LOGIC;
+						r_Immed_En : out  STD_LOGIC;
+						r_RF_A_En  : out  STD_LOGIC;
+						r_RF_B_En  : out  STD_LOGIC;											
+						r_MEM_OUT_WE  : out  STD_LOGIC;		
+						r_ALU_OUT_WE  : out  STD_LOGIC;		
+						r_MEM_DataIn_WE  : out  STD_LOGIC);
+end component;
+
  signal p_DECEX_En, p_EXMEM_En, p_MEMWB_En: STD_LOGIC;
  signal Control_Content, p_DECEX_Content, p_EXMEM_Content, p_MEMWB_Content : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
-
+signal r_RF_A_WE, r_RF_B_WE, r_MEM_OUT_WE, r_ALU_OUT_WE, r_PC_WE, r_Immed_WE, r_MEM_DataIn_WE: STD_LOGIC ;
 signal s_forward_A_sel, s_forward_B_sel : STD_LOGIC_VECTOR(1 downto 0);
 signal s_forward_A, s_forward_B: STD_LOGIC_VECTOR (31 downto 0);
 begin
+
+ -- Pipe Registers <-------------------------------  										Control bits      								---------------------------------->
+ -- pipe Content:  ALU_func | Alu_bin_select | MEM_ByteOp | MEM_WrEn| DEC_RF_WrEn | DEC_RF_WrData_sel | Rs | Rd | Rt
+ --             				  (4 bits)			    (1 bit) 					(1 bit)  			 (1 bit) 			  	(1 bit) 							(1 bit)				   (5 bits each) = total 24bits
 
 	GetControlContent: process(CLK, RST, EX_ALU_Bin_sel, EX_ALU_func, DEC_RF_WrEn, DEC_RF_WrData_sel, DEC_RF_B_sel, DEC_ImmExt, IF_PC_sel, IF_PC_LdEn, MEM_ByteOp, MEM_WrEn)
 	begin 
@@ -172,23 +193,32 @@ begin
 			s_forward_B <= r_RF_B;
 		end if;	
 	end process;
-
+	
+	RAW_hazard: Hazard Port Map(
+						CLK, 
+						RST, 
+						DEC_Instr, 
+						p_DECEX_Content, 
+						p_DECEX_En, 
+						r_Immed_We,
+						r_RF_A_WE,
+						r_RF_B_WE,
+						r_MEM_OUT_WE,
+						r_ALU_OUT_WE,
+						r_MEM_DataIn_WE
+	);
  -- Registers moving 32bit values from module to module
-	RF_A_Reg: SingleRegister Port Map(r_RF_A_WE, RST, CLK, RF_A_sig, r_RF_A);
-	RF_B_Reg: SingleRegister Port Map(r_RF_B_WE, RST, CLK, RF_B_sig, r_RF_B);
-	MEM_OUT_Reg: SingleRegister Port Map(r_MEM_OUT_WE, RST, CLK, MEM_Dout, r_MEM_OUT);
-	ALU_OUT_Reg: SingleRegister Port Map(r_ALU_OUT_WE, RST, CLK, ALU_result, r_ALU_OUT);
-	PC_Reg: SingleRegister Port Map(r_PC_WE, RST, CLK, IF_PC_Addr, IF_PC);
-	Immed_Reg: SingleRegister Port Map(r_Immed_WE, RST, CLK, Ext_Immed, r_Immed);
-	MEM_DataIn_Reg: SingleRegister Port Map(r_MEM_DataIn_WE, RST, CLK, r_RF_B, r_MEM_DataIn);
+	RF_A_Reg: ClockedSingleRegister Port Map(r_RF_A_WE, RST, CLK, RF_A_sig, r_RF_A);
+	RF_B_Reg: ClockedSingleRegister Port Map(r_RF_B_WE, RST, CLK, RF_B_sig, r_RF_B);
+	MEM_OUT_Reg: ClockedSingleRegister Port Map(r_MEM_OUT_WE, RST, CLK, MEM_Dout, r_MEM_OUT);
+	ALU_OUT_Reg: ClockedSingleRegister Port Map(r_ALU_OUT_WE, RST, CLK, ALU_result, r_ALU_OUT);
+	PC_Reg: ClockedSingleRegister Port Map(r_PC_WE, RST, CLK, IF_PC_Addr, IF_PC);
+	Immed_Reg: ClockedSingleRegister Port Map(r_Immed_WE, RST, CLK, Ext_Immed, r_Immed);
+	MEM_DataIn_Reg: ClockedSingleRegister Port Map(r_MEM_DataIn_WE, RST, CLK, r_RF_B, r_MEM_DataIn);
 
- -- Pipe Registers <-------------------------------  										Control bits      								---------------------------------->
- -- pipe Content: ALU_func | Alu_bin_select | MEM_ByteOp | MEM_WrEn| DEC_RF_WrEn | DEC_RF_WrData_sel | Rs | Rd | Rt
- --                          (4 bits)			   (1 bit) 						(1 bit)  			(1 bit) 			   	(1 bit) 							(1 bit)				 (5 bits each) = total 27bits
-
- DECEX_Pipe: SingleRegister Port Map(p_DECEX_En, RST, CLK, Control_content, p_DECEX_Content);
- EXMEM_Pipe: SingleRegister Port Map(p_EXMEM_En, RST, CLK, p_DECEX_Content, p_EXMEM_Content);
- MEMWB_Pipe: SingleRegister Port Map(p_MEMWB_En, RST, CLK, p_EXMEM_Content, p_MEMWB_Content);
+ DECEX_Pipe: ClockedSingleRegister Port Map(p_DECEX_En, RST, CLK, Control_content, p_DECEX_Content);
+ EXMEM_Pipe: ClockedSingleRegister Port Map(p_EXMEM_En, RST, CLK, p_DECEX_Content, p_EXMEM_Content);
+ MEMWB_Pipe: ClockedSingleRegister Port Map(p_MEMWB_En, RST, CLK, p_EXMEM_Content, p_MEMWB_Content);
 
 -- Structural modules
 if_stage: IFSTAGE Port Map(

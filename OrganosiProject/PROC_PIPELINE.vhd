@@ -42,15 +42,7 @@ end PROCESSOR_PIPELINE;
 architecture Behavioral of PROCESSOR_PIPELINE is
 
 component DATAPATH_PIPELINE is
- Port ( r_RF_A_WE : in  STD_LOGIC;
-		     r_RF_B_WE : in  STD_LOGIC;
-			  r_ALU_OUT_WE : in  STD_LOGIC;
-		     r_MEM_OUT_WE : in  STD_LOGIC;
-			  r_PC_WE : in  STD_LOGIC;
-			  r_Immed_WE : in  STD_LOGIC;
-			  r_MEM_DataIn_WE : in  STD_LOGIC;
-			  r_MEM_DataOut_WE : in  STD_LOGIC;
-			  EX_ALU_Bin_sel : in  STD_LOGIC;
+ Port (  EX_ALU_Bin_sel : in  STD_LOGIC;
            EX_ALU_func : in  STD_LOGIC_VECTOR (3 downto 0);
            EX_ALU_zero : out  STD_LOGIC;
 			  DEC_Instr : in  STD_LOGIC_VECTOR (31 downto 0);
@@ -76,16 +68,7 @@ signal s_MM_WrData, PC : STD_LOGIC_VECTOR(31 downto 0);
 signal s_MM_Addr : STD_LOGIC_VECTOR(10 downto 0);
 
 component CONTROL_PIPELINE is
-    Port ( 
-			  r_RF_A_WE : out  STD_LOGIC;
-		     r_RF_B_WE : out  STD_LOGIC;
-			  r_ALU_OUT_WE : out  STD_LOGIC;
-		     r_MEM_OUT_WE : out  STD_LOGIC;
-			  r_PC_WE : out  STD_LOGIC;
-			  r_Immed_WE : out  STD_LOGIC;
-			  r_MEM_DataIn_WE : out  STD_LOGIC;
-			  r_MEM_DataOut_WE : out  STD_LOGIC;
-			  EX_ALU_Bin_sel : out  STD_LOGIC;
+    Port ( EX_ALU_Bin_sel : out  STD_LOGIC;
            EX_ALU_func : out  STD_LOGIC_VECTOR (3 downto 0);
            EX_ALU_zero : in  STD_LOGIC;
 			  Instruction : in STD_LOGIC_VECTOR (31 downto 0);
@@ -102,7 +85,7 @@ component CONTROL_PIPELINE is
 			  CLK : in STD_LOGIC);
 end component;
 
-signal  r_RF_A_WE , r_RF_B_WE, r_ALU_OUT_WE, r_MEM_OUT_WE , r_PC_WE, r_Immed_WE, r_MEM_DataIn_WE, r_MEM_DataOut_WE ,ALU_Bin_sel, RF_WrEn, RF_WrData_sel, RF_B_sel, PC_sel, PC_LdEn, ByteOp, MEM_WrEn: STD_LOGIC;
+signal ALU_Bin_sel, RF_WrEn, RF_WrData_sel, RF_B_sel, PC_sel, PC_LdEn, ByteOp, MEM_WrEn: STD_LOGIC;
 signal Instruction: STD_LOGIC_VECTOR (31 downto 0);
 signal ALU_func: STD_LOGIC_VECTOR (3 downto 0);
 signal ImmExt : STD_LOGIC_VECTOR (1 downto 0);
@@ -110,14 +93,6 @@ signal ImmExt : STD_LOGIC_VECTOR (1 downto 0);
 begin
 
 my_datapath: DATAPATH_PIPELINE Port Map (
-			r_RF_A_WE , 
-			r_RF_B_WE, 
-			r_ALU_OUT_WE, 
-			r_MEM_OUT_WE , 
-			r_PC_WE, 
-			r_Immed_WE, 
-			r_MEM_DataIn_WE,
-			r_MEM_DataOut_WE,
 			ALU_Bin_sel,
 			ALU_func, 
 			ALU_zero, 
@@ -139,14 +114,6 @@ my_datapath: DATAPATH_PIPELINE Port Map (
 			CLK);
 			
 my_control: CONTROL_PIPELINE Port Map ( 
-			r_RF_A_WE , 
-			r_RF_B_WE, 
-			r_ALU_OUT_WE, 
-			r_MEM_OUT_WE , 
-			r_PC_WE, 
-			r_Immed_WE, 
-			r_MEM_DataIn_WE, 
-			r_MEM_DataOut_WE, 
 			ALU_Bin_sel, 
 			ALU_func, 
 			ALU_zero, 

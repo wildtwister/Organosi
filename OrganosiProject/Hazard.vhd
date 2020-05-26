@@ -31,90 +31,84 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Hazard is
 			Port(	Clk : in STD_LOGIC;
-			  Reset	: in  STD_LOGIC;
-			  rs : in  STD_LOGIC_VECTOR (4 downto 0);
-           rt : in  STD_LOGIC_VECTOR (4 downto 0);
-           OpCODE_pipe1ine : in  STD_LOGIC_VECTOR (5 downto 0);
-           rd_pipe1ine : in  STD_LOGIC_VECTOR (4 downto 0);
-           PC_LdEn : out  STD_LOGIC;
-			  MEM_WREn : out  STD_LOGIC);
+						Reset	: in  STD_LOGIC;
+						newInstruction: in STD_LOGIC_VECTOR (31 downto 0);
+						p_DECEX: in STD_LOGIC_VECTOR (31 downto 0);
+						IF_PC_LdEn : out STD_LOGIC;
+						r_PC_En : out  STD_LOGIC;
+						p_DECEX_En : out  STD_LOGIC;
+						r_Immed_En : out  STD_LOGIC;
+						r_RF_A_En  : out  STD_LOGIC;
+						r_RF_B_En  : out  STD_LOGIC;											
+						r_MEM_OUT_WE  : out  STD_LOGIC;		
+						r_ALU_OUT_WE  : out  STD_LOGIC;		
+						r_MEM_DataIn_WE  : out  STD_LOGIC);
 end Hazard;
 
 architecture Behavioral of Hazard is
-type state is (B,C);
-signal current_state,next_state: state;
+	type state is (Stall, DoNothing);
+	signal current_state,next_state: state;
+	signal newRs, newRt, prevRt : STD_LOGIC_VECTOR (4 downto 0);
+	signal prevMemRead : STD_LOGIC;
 
 begin
-process (clk)
-	begin
+	newRs <= newInstruction(25 downto 21);
+	newRt <= newInstruction(15 downto 11); 
+	prevRt <= newInstruction(15 downto 11);
+	prevMemRead <= p_DECEX(17);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		if (Reset ='1') then
-			current_state <= C;
-		elsif (rising_edge(clk)) then
-		  current_state <= next_state;
-		end if;
-	end process;
-	
-	process(current_state,Op_pipe1,rs,rt)
+	process (current_state)
 	begin
 		case current_state is
-	when A =>
-			PC_LdEn <= '0';
-			MEM_WREn <= '0';
-			next_state <= B;
-		when B =>
-			PC_LdEn <= '0';
-			MEM_WREn <= '0';
-			next_state <= C;
-		when C =>
-			if ( OpCODE_pipe1ine = "001111" AND (rs = rd_pipe1ine OR rt =rd_pipe1ine)) then
-				PC_LdEn <= '0';
-				MEM_WREn <= '1';
-				next_state <= B;
-			else
-				PC_LdEn <= '1';
-				MEM_WREn <= '1';
-				next_state <= C;
-			end if;
-			
+			when Stall =>
+					IF_PC_LdEn <= '0';
+					r_PC_En <= '0';
+					p_DECEX_En <= '0';
+					r_Immed_En <= '0';
+					r_RF_A_En <= '0';
+					r_RF_B_En <= '0';
+					r_MEM_OUT_WE  <= '1';		
+					r_ALU_OUT_WE  <= '1';		
+					r_MEM_DataIn_WE <= '1';		
+					next_state <= DoNothing;
+			when DoNothing =>
+					IF_PC_LdEn <= '1';
+					r_PC_En <= '1';
+					p_DECEX_En <= '1';
+					r_Immed_En <= '1';
+					r_RF_A_En <= '1';
+					r_RF_B_En <= '1';
+					r_MEM_OUT_WE  <= '1';		
+					r_ALU_OUT_WE  <= '1';		
+					r_MEM_DataIn_WE <= '1';		
+					next_state <= DoNothing;
+			when others =>
+					IF_PC_LdEn <= '1';
+					r_PC_En <= '1';
+					p_DECEX_En <= '1';
+					r_Immed_En <= '1';
+					r_RF_A_En <= '1';
+					r_RF_B_En <= '1';
+					r_MEM_OUT_WE  <= '1';		
+					r_ALU_OUT_WE  <= '1';		
+					r_MEM_DataIn_WE <= '1';		
+					next_state <= DoNothing;
 		end case;
 	end process;
-
+		
+		
+	process(Clk, Reset, next_state, newRs, newRt, prevRt, prevMemRead)
+	begin
+		if Reset = '1' then
+			current_state <= DoNothing;
+		else
+			if rising_edge(Clk) then
+				if (prevMemRead = '1') AND ((prevRT = newRs) OR (prevRt = newRt)) then
+					next_state <= Stall;
+				end if;
+				current_state <= next_state;
+			end if;
+		end if;
+	end process;
 end Behavioral;
 
